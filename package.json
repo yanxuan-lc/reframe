@@ -1,0 +1,14 @@
+{
+  "name": "reframe",
+  "version": "1.0.0",
+  "description": "Bootstrap for 3D rendering.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yanxuan.lc@gmail.com",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "three": "^0.139.0"
+  }
+}

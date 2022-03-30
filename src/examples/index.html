@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Re:Frame</title>
+  <style>
+    html, body, #container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+
+<script id="vss" type="x-shader/x-vertex">
+  uniform int count;
+  uniform vec3 points[3];
+  varying float vWeight;
+  void main() {
+
+    // calculate vertex weight.
+    vWeight = 0.0;
+    for(int i = 0; i < count; i ++) {
+      vWeight = max(vWeight, max(1.0 - distance(position, points[i]), 0.0));
+    }
+
+    // calculate vertex position.
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+</script>
+<script id="fss" type="x-shader/x-fragment">
+  varying float vWeight;
+  void main() {
+    gl_FragColor = vec4(vWeight, 0, 1.0 - vWeight, 1.0);
+  }
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "../../node_modules/three/build/three.module.js",
+    "OrbitControls": "../../node_modules/three/examples/jsm/controls/OrbitControls.js",
+    "reframe": "../../src/reframe/index.js"
+  }
+}
+
+
+</script>
+<script type="module" src="index.js"></script>
+</body>
+</html>
