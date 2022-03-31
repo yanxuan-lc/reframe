@@ -8,6 +8,7 @@
       width: 100%;
       height: 100%;
       margin: 0;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -16,31 +17,45 @@
 
 <!-- Shaders -->
 <script id="vss" type="x-shader/x-vertex">
-  uniform vec3 uSamplingPoints[MAX_SAMPLING_POINT_COUNT];
-  uniform int uSamplingCount;
+  const highp vec3 AMBIENT_INTENSITY = vec3(0.5);
+  const highp vec3 AMBIENT_COLOR = vec3(0.5);
+  const highp vec3 AMBIENT_DIRECTION = vec3(0.85, 0.8, 0.75);
 
-  varying float vWeight;
+  varying highp vec3 vPosition;
+  varying highp vec3 vLighting;
 
   void main() {
 
-    // calculate vertex weight.
-    vWeight = 0.0;
-    for(int i = 0; i < uSamplingCount; i ++) {
-      vWeight = max(vWeight, max(1.0 - distance(position, uSamplingPoints[i]), 0.0));
-    }
+    // projection.
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
     // calculate vertex position.
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vPosition = position;
+
+    // calculate ambient light.
+    highp float direction = max(dot(normalMatrix * normal, AMBIENT_DIRECTION), 0.0);
+    vLighting = AMBIENT_INTENSITY + (AMBIENT_COLOR * direction);
   }
 </script>
 <script id="fss" type="x-shader/x-fragment">
+  uniform vec4 uSamplingPoints[MAX_SAMPLING_POINT_COUNT];
   uniform sampler2D tColorMap;
 
-  varying float vWeight;
+  varying highp vec3 vPosition;
+  varying highp vec3 vLighting;
 
   void main() {
-    gl_FragColor = texture2D(tColorMap, vec2(vWeight, 0.5));
-//    gl_FragColor = vec4(vWeight, 0, 1.0 - vWeight, 1.0);
+
+    // calculate weight.
+    float weight = 0.0;
+    for (int i = 0; i < MAX_SAMPLING_POINT_COUNT; i ++) {
+      highp float intensity = uSamplingPoints[i].w;
+      highp float distance = distance(vPosition, uSamplingPoints[i].xyz);
+      weight = max(weight, max(intensity - distance, 0.0));
+    }
+
+    // fill color
+    gl_FragColor = vec4(texture2D(tColorMap, vec2(weight, 0.5)).xyz * vLighting, 1.0);
   }
 </script>
 
