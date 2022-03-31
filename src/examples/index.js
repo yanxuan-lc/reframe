@@ -2,10 +2,15 @@
 // https://zhuanlan.zhihu.com/p/350355621
 //
 import {GameEngine, SceneHelper} from 'reframe';
-import {BoxGeometry, Mesh, ShaderMaterial, TextureLoader, Vector4} from "three";
+import {BoxGeometry, CanvasTexture, Mesh, ShaderMaterial, Vector4} from "three";
+import {Lut} from 'Lut';
 
 const engine = new GameEngine(document.querySelector('#container'));
-SceneHelper.init(engine.scene);
+SceneHelper.init(engine.scene, {
+  hemisphere: true,
+  directional: true,
+  ground: true,
+});
 engine.start();
 
 // get shader source.
@@ -36,7 +41,8 @@ for (let i = 0; i <= w; i++) {
 }
 
 // load color map.
-const colors = await new TextureLoader().loadAsync('colormap.jpg');
+const lut = new Lut('blackbody');
+const colors = new CanvasTexture(lut.createCanvas());
 
 // add box geometry.
 const geometry = new BoxGeometry(
@@ -60,5 +66,5 @@ const material = new ShaderMaterial({
   fragmentShader: fss,
 });
 const box = new Mesh(geometry, material);
-// box.position.set(1, 0, 0);
+box.position.set(1, 0.5, 0);
 engine.scene.add(box);
