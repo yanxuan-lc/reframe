@@ -14,16 +14,19 @@
 <body>
 <div id="container"></div>
 
+<!-- Shaders -->
 <script id="vss" type="x-shader/x-vertex">
-  uniform int count;
-  uniform vec3 points[3];
+  uniform vec3 uSamplingPoints[MAX_SAMPLING_POINT_COUNT];
+  uniform int uSamplingCount;
+
   varying float vWeight;
+
   void main() {
 
     // calculate vertex weight.
     vWeight = 0.0;
-    for(int i = 0; i < count; i ++) {
-      vWeight = max(vWeight, max(1.0 - distance(position, points[i]), 0.0));
+    for(int i = 0; i < uSamplingCount; i ++) {
+      vWeight = max(vWeight, max(1.0 - distance(position, uSamplingPoints[i]), 0.0));
     }
 
     // calculate vertex position.
@@ -31,12 +34,17 @@
   }
 </script>
 <script id="fss" type="x-shader/x-fragment">
+  uniform sampler2D tColorMap;
+
   varying float vWeight;
+
   void main() {
-    gl_FragColor = vec4(vWeight, 0, 1.0 - vWeight, 1.0);
+    gl_FragColor = texture2D(tColorMap, vec2(vWeight, 0.5));
+//    gl_FragColor = vec4(vWeight, 0, 1.0 - vWeight, 1.0);
   }
 </script>
 
+<!-- GameEngine -->
 <script type="importmap">
 {
   "imports": {
@@ -45,9 +53,14 @@
     "reframe": "../../src/reframe/index.js"
   }
 }
-
-
 </script>
 <script type="module" src="index.js"></script>
+
+<!-- Initialize spector debugger. -->
+<script src="../../node_modules/spectorjs/dist/spector.bundle.js"></script>
+<script>
+  const spector = new SPECTOR.Spector();
+  spector.displayUI();
+</script>
 </body>
 </html>

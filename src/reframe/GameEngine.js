@@ -1,12 +1,16 @@
 import {
-  PerspectiveCamera,
-  WebGLRenderer,
+  AxesHelper,
   Clock,
+  PerspectiveCamera,
   Scene,
-  AxesHelper
+  WebGLRenderer
 } from "three";
 import {OrbitControls} from 'OrbitControls';
 
+/**
+ * Default initialize options.
+ * @type {{renderer: {logarithmicDepthBuffer: boolean, antialias: boolean, preserveDrawingBuffer: boolean, precision: string, powerPreference: string}, camera: {far: number, aspect: number, near: number, fov: number}}}
+ */
 const OPTS = {
   renderer: {
     antialias: true,
@@ -23,7 +27,15 @@ const OPTS = {
   }
 };
 
+/**
+ * GameEngine.
+ */
 export class GameEngine {
+
+  /**
+   * Construct game engine instance.
+   * @param container HTML container.
+   */
   constructor(container) {
     this._container = container;
 
@@ -34,10 +46,10 @@ export class GameEngine {
 
     // initialize camera.
     this._camera = new PerspectiveCamera(
-        OPTS.camera.fov,
-        OPTS.camera.aspect,
-        OPTS.camera.near,
-        OPTS.camera.far,
+      OPTS.camera.fov,
+      OPTS.camera.aspect,
+      OPTS.camera.near,
+      OPTS.camera.far,
     );
     this._camera.position.set(5, 5, 5);
 

@@ -10,5 +10,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "three": "^0.139.0"
+  },
+  "devDependencies": {
+    "spectorjs": "^0.9.27"
   }
 }
