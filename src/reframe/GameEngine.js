@@ -6,6 +6,7 @@ import {
   WebGLRenderer
 } from "three";
 import {OrbitControls} from 'OrbitControls';
+import {TransformControls} from "TransformControls";
 
 /**
  * Default initialize options.
@@ -56,14 +57,19 @@ export class GameEngine {
     // initialize clock.
     this._clock = new Clock();
 
-    // initialize controls.
-    this._controls = new OrbitControls(this._camera, this._container);
-
     // initialize scene.
     this._scene = new Scene();
 
     // initialize helpers.
     this._scene.add(new AxesHelper(100));
+
+    // initialize controls.
+    this._orbit = new OrbitControls(this._camera, this._container);
+    this._transformer = new TransformControls(this._camera, this._container);
+    this._transformer.addEventListener('dragging-changed', (event) => {
+      this._orbit.enabled = !event.value;
+    });
+    this._scene.add(this._transformer);
 
     // adjust viewport automatically.
     this.resize();
@@ -84,7 +90,7 @@ export class GameEngine {
     const delta = this._clock.getDelta();
 
     // update controls.
-    this._controls.update();
+    this._orbit.update();
 
     // update renderer.
     this._renderer.render(this._scene, this._camera);
@@ -120,5 +126,17 @@ export class GameEngine {
 
   get camera() {
     return this._camera;
+  }
+
+  get renderer() {
+    return this._renderer;
+  }
+
+  get container() {
+    return this._container;
+  }
+
+  get transformer() {
+    return this._transformer;
   }
 }

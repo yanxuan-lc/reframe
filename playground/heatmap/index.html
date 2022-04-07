@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Re:Frame - Heatmap</title>
+  <style>
+    html, body, #container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+
+<!-- GameEngine -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../../node_modules/three/build/three.module.js",
+    "OrbitControls": "../../node_modules/three/examples/jsm/controls/OrbitControls.js",
+    "TransformControls": "../../node_modules/three/examples/jsm/controls/TransformControls.js",
+    "Lut": "../../node_modules/three/examples/jsm/math/Lut.js",
+    "reframe": "../../src/reframe/index.js"
+  }
+}
+</script>
+<script type="module" src="index.js"></script>
+
+<!-- Initialize spector debugger. -->
+<script src="../../node_modules/spectorjs/dist/spector.bundle.js"></script>
+<script>
+  const spector = new SPECTOR.Spector();
+  spector.displayUI();
+</script>
+</body>
+</html>
